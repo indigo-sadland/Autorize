@@ -26,6 +26,7 @@ class ConfigurationTab():
         """  init configuration tab
         """
         self.DEFUALT_REPLACE_TEXT = "Cookie: Insert=injected; cookie=or;\nHeader: here"
+        self.DEFUALT_REPLACE_TEXT_2 = "Header: here"
         self._extender.startButton = JToggleButton("Autorize is off",
                                     actionPerformed=self.startOrStop)
         self._extender.startButton.setBounds(10, 20, 230, 30)
@@ -52,38 +53,52 @@ class ConfigurationTab():
         self._extender.replaceQueryParam.setBounds(280, 85, 300, 30)
         self._extender.replaceQueryParam.setSelected(False)
 
+        self._extender.customUnauthHeaders = JCheckBox("Use custom headers for unauth request")
+        self._extender.customUnauthHeaders.setBounds(280, 105, 300, 30)
+        self._extender.customUnauthHeaders.setSelected(False)
+
         self._extender.saveHeadersButton = JButton("Add",
                                         actionPerformed=self.saveHeaders)
-        self._extender.saveHeadersButton.setBounds(315, 115, 80, 30)
+        self._extender.saveHeadersButton.setBounds(315, 150, 80, 30)
         
         self._extender.removeHeadersButton = JButton("Remove",
                                         actionPerformed=self.removeHeaders)
-        self._extender.removeHeadersButton.setBounds(400, 115, 80, 30)
+        self._extender.removeHeadersButton.setBounds(400, 150, 80, 30)
 
         savedHeadersTitles = self.getSavedHeadersTitles()
         self._extender.savedHeadersTitlesCombo = JComboBox(savedHeadersTitles)
         self._extender.savedHeadersTitlesCombo.addActionListener(SavedHeaderChange(self._extender))
-        self._extender.savedHeadersTitlesCombo.setBounds(10, 115, 300, 30)
+        self._extender.savedHeadersTitlesCombo.setBounds(10, 150, 300, 30)
 
         self._extender.replaceString = JTextArea(self.DEFUALT_REPLACE_TEXT, 5, 30)
         self._extender.replaceString.setWrapStyleWord(True)
         self._extender.replaceString.setLineWrap(True)
         scrollReplaceString = JScrollPane(self._extender.replaceString)
         scrollReplaceString.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED)
-        scrollReplaceString.setBounds(10, 150, 470, 150)
+        scrollReplaceString.setBounds(10, 190, 470, 150)
 
         fromLastRequestLabel = JLabel("From last request:")
-        fromLastRequestLabel.setBounds(10, 305, 250, 30)
+        fromLastRequestLabel.setBounds(10, 350, 250, 30)
 
         self._extender.fetchCookiesHeaderButton = JButton("Fetch Cookies header",
                                 actionPerformed=self.fetchCookiesHeader)
         self._extender.fetchCookiesHeaderButton.setEnabled(False)
-        self._extender.fetchCookiesHeaderButton.setBounds(10, 330, 220, 30)
+        self._extender.fetchCookiesHeaderButton.setBounds(10, 380, 220, 30)
 
         self._extender.fetchAuthorizationHeaderButton = JButton("Fetch Authorization header",
                                 actionPerformed=self.fetchAuthorizationHeader)
         self._extender.fetchAuthorizationHeaderButton.setEnabled(False)
-        self._extender.fetchAuthorizationHeaderButton.setBounds(260, 330, 220, 30)
+        self._extender.fetchAuthorizationHeaderButton.setBounds(260, 380, 220, 30)
+
+        unauthReqHeaders = JLabel("Headers for unauthenticated requests:")
+        unauthReqHeaders.setBounds(10, 430, 340, 30)
+
+        self._extender.replaceString2 = JTextArea(self.DEFUALT_REPLACE_TEXT_2, 5, 30)
+        self._extender.replaceString2.setWrapStyleWord(True)
+        self._extender.replaceString2.setLineWrap(True)
+        scrollReplaceString2 = JScrollPane(self._extender.replaceString2)
+        scrollReplaceString2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED)
+        scrollReplaceString2.setBounds(10, 460, 470, 150)
 
         self._extender.filtersTabs = JTabbedPane()
         self._extender.filtersTabs = self._extender.filtersTabs
@@ -104,6 +119,8 @@ class ConfigurationTab():
         self.config_pnl.add(self._extender.clearButton)
         self.config_pnl.add(scrollReplaceString)
         self.config_pnl.add(fromLastRequestLabel)
+        self.config_pnl.add(unauthReqHeaders)
+        self.config_pnl.add(scrollReplaceString2)
         self.config_pnl.add(self._extender.saveHeadersButton)
         self.config_pnl.add(self._extender.removeHeadersButton)
         self.config_pnl.add(self._extender.savedHeadersTitlesCombo)
@@ -115,6 +132,7 @@ class ConfigurationTab():
         self.config_pnl.add(self._extender.prevent304)
         self.config_pnl.add(self._extender.doUnauthorizedRequest)
         self.config_pnl.add(self._extender.replaceQueryParam)
+        self.config_pnl.add(self._extender.customUnauthHeaders)
         
         self._extender._cfg_splitpane = JSplitPane(JSplitPane.VERTICAL_SPLIT)
         self._extender._cfg_splitpane.setResizeWeight(0.5)
@@ -144,6 +162,7 @@ class ConfigurationTab():
             self._extender.replaceString.setText("paramName=paramValue")
         else:
             self._extender.replaceString.setText(self.DEFUALT_REPLACE_TEXT)
+
 
     def saveHeaders(self, event):
         savedHeadersTitle = JOptionPane.showInputDialog("Please provide saved headers title:")
@@ -186,4 +205,3 @@ class SavedHeaderChange(ActionListener):
         selectedTitle = self._extender.savedHeadersTitlesCombo.getSelectedItem()
         headers = [x for x in self._extender.savedHeaders if x['title'] == selectedTitle]
         self._extender.replaceString.setText(headers[0]['headers'])
-
