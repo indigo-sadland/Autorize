@@ -10,7 +10,7 @@ if (sys.version_info[0] == 2):
 
 sys.path.append("..")
 
-from helpers.http import get_authorization_header_from_message, get_cookie_header_from_message, isStatusCodesReturned, makeMessage, makeRequest, getResponseBody, IHttpRequestResponseImplementation
+from helpers.http import get_authorization_header_from_message, get_cookie_header_from_message, isStatusCodesReturned, makeMessage, makeMessageUnAuth, makeRequest, getResponseBody, IHttpRequestResponseImplementation
 from gui.table import LogEntry, UpdateTableEDT
 from javax.swing import SwingUtilities
 from java.net import URL
@@ -284,7 +284,7 @@ def checkBypass(self, oldStatusCode, newStatusCode, oldContent,
 def checkAuthorization(self, messageInfo, originalHeaders, checkUnauthorized):
     # Check unauthorized request
     if checkUnauthorized:
-        messageUnauthorized = makeMessage(self, messageInfo, True, False)
+        messageUnauthorized = makeMessageUnAuth(self, messageInfo, True, False)
         requestResponseUnauthorized = makeRequest(self, messageInfo, messageUnauthorized)
         unauthorizedResponse = requestResponseUnauthorized.getResponse()
         analyzedResponseUnauthorized = self._helpers.analyzeResponse(unauthorizedResponse)
