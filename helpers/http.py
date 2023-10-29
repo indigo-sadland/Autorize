@@ -20,9 +20,28 @@ def makeRequest(self, messageInfo, message):
     requestURL = self._helpers.analyzeRequest(messageInfo).getUrl()
     return self._callbacks.makeHttpRequest(self._helpers.buildHttpService(str(requestURL.getHost()), int(requestURL.getPort()), requestURL.getProtocol() == "https"), message)
 
+def makeMessageUnAuth(self, messageInfo, removeOrNot, authorizeOrNot):
+    requestInfo = self._helpers.analyzeRequest(messageInfo)
+    headers = requestInfo.getHeaders()
+    unAuthHeaders = []
+    customUnauthHeadersFlag = self.customUnauthHeaders.isSelected()
+    if customUnauthHeadersFlag:
+        customHeaders = self.replaceString2.getText()
+        customHeaders = customHeaders.split("\n")
+        unAuthHeaders.append(headers[0:1])
+        for cs in customHeaders:
+            unAuthHeaders.append(cs)
+    else:
+        return makeMessage(self, messageInfo, removeOrNot, authorizeOrNot)
+
+    msgBody = messageInfo.getRequest()[requestInfo.getBodyOffset():]
+
+    return self._helpers.buildHttpMessage(unAuthHeaders, msgBody)
+
 def makeMessage(self, messageInfo, removeOrNot, authorizeOrNot):
     requestInfo = self._helpers.analyzeRequest(messageInfo)
     headers = requestInfo.getHeaders()
+
     if removeOrNot:
         headers = list(headers)
         # flag for query
