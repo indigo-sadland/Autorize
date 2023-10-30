@@ -28,14 +28,15 @@ def makeMessageUnAuth(self, messageInfo, removeOrNot, authorizeOrNot):
     if customUnauthHeadersFlag:
         customHeaders = self.replaceString2.getText()
         customHeaders = customHeaders.split("\n")
-        unAuthHeaders.append(headers[0:1])
+        for h in headers[0:2]:
+            unAuthHeaders.append(h)
         for cs in customHeaders:
             unAuthHeaders.append(cs)
     else:
         return makeMessage(self, messageInfo, removeOrNot, authorizeOrNot)
 
     msgBody = messageInfo.getRequest()[requestInfo.getBodyOffset():]
-
+    print unAuthHeaders
     return self._helpers.buildHttpMessage(unAuthHeaders, msgBody)
 
 def makeMessage(self, messageInfo, removeOrNot, authorizeOrNot):
